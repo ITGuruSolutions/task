@@ -8,6 +8,14 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+api.interceptors.request.use(async (config) => {
+  const latency = Number(localStorage.getItem('um_api_latency') || '500');
+  if (latency > 0) {
+    await new Promise((resolve) => setTimeout(resolve, latency));
+  }
+  return config;
+});
+
 const getErrorMessage = (error) => {
   if (error.response?.data?.message) return error.response.data.message;
   if (error.response?.status === 404) return 'API endpoint not found. Is the backend deployed?';

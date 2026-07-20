@@ -27,6 +27,16 @@ function Settings({ darkMode, onDarkModeToggle }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const apiBaseUrl = import.meta.env.VITE_API_URL
+    ? (import.meta.env.VITE_API_URL.startsWith('http')
+        ? import.meta.env.VITE_API_URL
+        : `${window.location.origin}${import.meta.env.VITE_API_URL}`)
+    : `${window.location.origin}/api`;
+
+  const appEnv = window.location.hostname.includes('vercel.app')
+    ? 'production-cloud (Vercel)'
+    : 'local-development';
+
   // Settings state (saved in local storage)
   const [defaultLimit, setDefaultLimit] = useState(() => {
     return Number(localStorage.getItem('um_default_limit') || '10');
@@ -217,10 +227,10 @@ function Settings({ darkMode, onDarkModeToggle }) {
                     </Box>
                     <Divider sx={{ mb: 2 }} />
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      <strong>Backend URL:</strong> http://localhost:5000/api
+                      <strong>Backend URL:</strong> {apiBaseUrl}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      <strong>App Environment:</strong> local-development
+                      <strong>App Environment:</strong> {appEnv}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       <strong>Client Version:</strong> v1.0.2 (React 19 + MUI v9 + Vite 8)
