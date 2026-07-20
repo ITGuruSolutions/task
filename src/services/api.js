@@ -4,9 +4,16 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 });
+
+const getErrorMessage = (error) => {
+  if (error.response?.data?.message) return error.response.data.message;
+  if (error.response?.status === 404) return 'API endpoint not found. Is the backend deployed?';
+  if (!error.response) return 'Cannot reach the API server. Check deployment and environment variables.';
+  return error.message || 'Request failed';
+};
 
 export const userApi = {
   getUsers: async () => {
@@ -14,8 +21,8 @@ export const userApi = {
       const response = await api.get('/users');
       return response.data;
     } catch (error) {
-      console.error('Error fetching users:', error);
-      throw error;
+      console.error('Error fetching users:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
     }
   },
 
@@ -24,8 +31,8 @@ export const userApi = {
       const response = await api.get(`/users/${id}`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching user:', error);
-      throw error;
+      console.error('Error fetching user:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
     }
   },
 
@@ -34,8 +41,8 @@ export const userApi = {
       const response = await api.post('/users', userData);
       return response.data;
     } catch (error) {
-      console.error('Error creating user:', error);
-      throw error;
+      console.error('Error creating user:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
     }
   },
 
@@ -44,8 +51,8 @@ export const userApi = {
       const response = await api.put(`/users/${id}`, userData);
       return response.data;
     } catch (error) {
-      console.error('Error updating user:', error);
-      throw error;
+      console.error('Error updating user:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
     }
   },
 
@@ -54,8 +61,8 @@ export const userApi = {
       await api.delete(`/users/${id}`);
       return id;
     } catch (error) {
-      console.error('Error deleting user:', error);
-      throw error;
+      console.error('Error deleting user:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
     }
   },
 };

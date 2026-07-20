@@ -125,28 +125,44 @@ src/
 - Implement optimistic UI updates with rollback on failure
 - Add deployment pipeline and hosted demo link
 
-## Deployment
+## Deployment (Vercel)
 
-Build the project:
+This project deploys **frontend + API together** on Vercel.
+
+### 1. Set environment variable on Vercel
+
+In your Vercel project → **Settings → Environment Variables**, add:
+
+| Name | Value |
+|------|-------|
+| `MONGO_URI` | `mongodb+srv://<user>:<password>@<cluster>.mongodb.net/user_management?appName=task` |
+
+Also allow MongoDB Atlas network access:
+- Go to MongoDB Atlas → Network Access → Add IP Address → **Allow Access from Anywhere** (`0.0.0.0/0`)
+
+### 2. Deploy
 
 ```bash
 npm run build
+# Push to GitHub and connect repo on Vercel, or:
+npx vercel --prod
 ```
 
-Deploy the `dist/` folder to any static host. This project includes a `vercel.json` for SPA routing on Vercel.
+### 3. Verify API after deploy
 
-### Deploy to Vercel (recommended)
+Open these URLs (replace with your domain):
 
-1. Push the repo to GitHub.
-2. Import the project at [vercel.com](https://vercel.com).
-3. Set build command: `npm run build`
-4. Set output directory: `dist`
-5. Deploy and add your live URL below.
+- `https://your-app.vercel.app/api/health` → should show `"database": "connected"`
+- `https://your-app.vercel.app/api/users` → should return JSON user list
 
-**Live Demo:** _Add your deployment URL here after publishing_
+If `/api/users` returns HTML instead of JSON, redeploy after pulling the latest `vercel.json` fix.
 
-### Deploy to Netlify
+### Why data was missing before
 
-1. Build command: `npm run build`
-2. Publish directory: `dist`
-3. Add a `_redirects` file with `/* /index.html 200` for client-side routing.
+1. `vercel.json` was sending **all routes including `/api`** to `index.html`
+2. The Express/MongoDB backend only ran locally, not on Vercel
+3. The frontend called `/api/users` on Vercel but got an HTML page back → no data
+
+**Fix applied:** Added `api/index.js` serverless handler + corrected Vercel rewrites so `/api/*` hits the backend.
+
+**Live Demo:** _Add your deployment URL here_

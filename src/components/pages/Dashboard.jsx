@@ -53,8 +53,8 @@ function Dashboard({ darkMode, onDarkModeToggle }) {
         toast.success('Users loaded successfully');
       }
     } catch (err) {
-      setError('Failed to load users. Please try again.');
-      toast.error('Failed to load users');
+      setError(err.message || 'Failed to load users. Please try again.');
+      toast.error(err.message || 'Failed to load users');
       console.error('Error fetching users:', err);
     } finally {
       setLoading(false);
