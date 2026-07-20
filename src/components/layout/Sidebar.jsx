@@ -21,11 +21,18 @@ import {
   FiChevronLeft,
   FiChevronRight,
 } from 'react-icons/fi';
+import { useAuth } from '../../hooks/useAuth';
 
 const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const location = useLocation();
+  const { user } = useAuth();
+
+  const displayName = user?.username
+    ? user.username.charAt(0).toUpperCase() + user.username.slice(1)
+    : 'Admin';
+  const initials = displayName.slice(0, 2).toUpperCase();
 
   const menuItems = [
     { icon: FiLayout, label: 'Dashboard', path: '/' },
@@ -43,8 +50,9 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
       sx={{
         width: collapsed ? 80 : 280,
         height: '100vh',
-        backgroundColor: '#FFFFFF',
-        borderRight: '1px solid #E2E8F0',
+        backgroundColor: 'background.paper',
+        borderRight: '1px solid',
+        borderColor: 'divider',
         display: 'flex',
         flexDirection: 'column',
         position: isMobile ? 'fixed' : 'sticky',
@@ -127,6 +135,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
                 component={Link}
                 to={item.path}
                 disabled={item.disabled}
+                onClick={isMobile ? onMobileClose : undefined}
                 sx={{
                   borderRadius: 2,
                   mb: 1,
@@ -202,7 +211,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
               backgroundColor: 'secondary.main',
             }}
           >
-            AD
+            {initials}
           </Avatar>
           <AnimatePresence>
             {!collapsed && (
@@ -219,7 +228,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
                       color: 'text.primary',
                     }}
                   >
-                    Admin User
+                    {displayName}
                   </Box>
                   <Box
                     sx={{
@@ -227,7 +236,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
                       color: 'text.secondary',
                     }}
                   >
-                    admin@hub.com
+                    {user?.username || 'admin'}@hub.com
                   </Box>
                 </Box>
               </motion.div>
@@ -255,7 +264,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
               zIndex: 1199,
             }}
           >
-            {sidebarContent}
+            <Box onClick={(event) => event.stopPropagation()}>{sidebarContent}</Box>
           </Box>
         )}
       </AnimatePresence>

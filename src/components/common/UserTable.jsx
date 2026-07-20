@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { motion } from 'framer-motion';
 import { FiEye, FiEdit, FiTrash2 } from 'react-icons/fi';
 
-const UserTable = ({ users, onView, onEdit, onDelete, pageSize }) => {
+const UserTable = ({ users, onView, onEdit, onDelete, pageSize, onPageSizeChange }) => {
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: pageSize || 10,
@@ -164,8 +164,9 @@ const UserTable = ({ users, onView, onEdit, onDelete, pageSize }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       sx={{
-        height: 600,
+        height: { xs: 480, sm: 540, md: 600 },
         width: '100%',
+        minWidth: 0,
         '& .MuiDataGrid-root': {
           borderRadius: 3,
           border: '1px solid #E2E8F0',
@@ -195,7 +196,12 @@ const UserTable = ({ users, onView, onEdit, onDelete, pageSize }) => {
         getRowId={(row) => row.id}
         pageSizeOptions={[10, 25, 50, 100]}
         paginationModel={paginationModel}
-        onPaginationModelChange={setPaginationModel}
+        onPaginationModelChange={(model) => {
+          setPaginationModel(model);
+          if (model.pageSize !== pageSize) {
+            onPageSizeChange?.(model.pageSize);
+          }
+        }}
         paginationMode="client"
         disableRowSelectionOnClick
         disableColumnMenu

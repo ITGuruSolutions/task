@@ -13,6 +13,7 @@ import {
   Box,
   Typography,
   CircularProgress,
+  FormHelperText,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useForm, Controller } from 'react-hook-form';
@@ -37,7 +38,7 @@ const defaultValues = {
   status: 'Active',
 };
 
-const UserModal = ({ open, onClose, user, mode, onSubmit, loading }) => {
+const UserModal = ({ open, onClose, user, mode, onSubmit, loading, fetchingUser = false }) => {
   const {
     register,
     handleSubmit,
@@ -90,6 +91,11 @@ const UserModal = ({ open, onClose, user, mode, onSubmit, loading }) => {
         </Typography>
       </DialogTitle>
       <DialogContent>
+        {fetchingUser ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
         <Box
           component="form"
           id="user-form"
@@ -132,6 +138,9 @@ const UserModal = ({ open, onClose, user, mode, onSubmit, loading }) => {
                     </MenuItem>
                   ))}
                 </Select>
+                {errors.department && (
+                  <FormHelperText>{errors.department.message}</FormHelperText>
+                )}
               </FormControl>
             )}
           />
@@ -148,6 +157,9 @@ const UserModal = ({ open, onClose, user, mode, onSubmit, loading }) => {
                     </MenuItem>
                   ))}
                 </Select>
+                {errors.role && (
+                  <FormHelperText>{errors.role.message}</FormHelperText>
+                )}
               </FormControl>
             )}
           />
@@ -167,6 +179,7 @@ const UserModal = ({ open, onClose, user, mode, onSubmit, loading }) => {
             />
           )}
         </Box>
+        )}
       </DialogContent>
       <DialogActions sx={{ p: 3 }}>
         <Button onClick={handleClose} variant="outlined">
@@ -176,7 +189,7 @@ const UserModal = ({ open, onClose, user, mode, onSubmit, loading }) => {
           <Button
             onClick={handleSubmit(handleFormSubmit)}
             variant="contained"
-            disabled={loading}
+            disabled={loading || fetchingUser}
             startIcon={loading ? <CircularProgress size={20} /> : null}
           >
             {loading ? 'Saving...' : mode === 'add' ? 'Add User' : 'Save Changes'}

@@ -1,8 +1,8 @@
 import { Box, Typography, Button } from '@mui/material';
 import { motion } from 'framer-motion';
-import { FiUsers } from 'react-icons/fi';
+import { FiUsers, FiFilter } from 'react-icons/fi';
 
-const EmptyState = ({ onAddUser }) => {
+const EmptyState = ({ onAddUser, isFiltered = false, onClearFilters }) => {
   return (
     <Box
       component={motion.div}
@@ -34,7 +34,11 @@ const EmptyState = ({ onAddUser }) => {
           mb: 3,
         }}
       >
-        <FiUsers size={48} color="#2563EB" />
+        {isFiltered ? (
+          <FiFilter size={48} color="#2563EB" />
+        ) : (
+          <FiUsers size={48} color="#2563EB" />
+        )}
       </Box>
       <Typography
         variant="h5"
@@ -44,7 +48,7 @@ const EmptyState = ({ onAddUser }) => {
           mb: 1,
         }}
       >
-        No Users Found
+        {isFiltered ? 'No Matching Users' : 'No Users Found'}
       </Typography>
       <Typography
         variant="body1"
@@ -55,19 +59,19 @@ const EmptyState = ({ onAddUser }) => {
           maxWidth: 400,
         }}
       >
-        Get started by adding your first user to the system.
+        {isFiltered
+          ? 'Try adjusting your search or filters to find what you are looking for.'
+          : 'Get started by adding your first user to the system.'}
       </Typography>
-      <Button
-        variant="contained"
-        onClick={onAddUser}
-        startIcon={<FiUsers />}
-        sx={{
-          px: 4,
-          py: 1.5,
-        }}
-      >
-        Add User
-      </Button>
+      {isFiltered ? (
+        <Button variant="outlined" onClick={onClearFilters} startIcon={<FiFilter />}>
+          Clear Filters
+        </Button>
+      ) : (
+        <Button variant="contained" onClick={onAddUser} startIcon={<FiUsers />}>
+          Add User
+        </Button>
+      )}
     </Box>
   );
 };

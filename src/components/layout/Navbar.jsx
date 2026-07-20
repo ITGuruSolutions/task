@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   AppBar,
@@ -22,10 +23,13 @@ import {
   FiMenu,
   FiChevronDown,
 } from 'react-icons/fi';
+import { useAuth } from '../../hooks/useAuth';
 
 const Navbar = ({ onMenuClick, darkMode, onDarkModeToggle, searchQuery = '', onSearchChange }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleProfileMenuOpen = (event) => {
@@ -36,13 +40,25 @@ const Navbar = ({ onMenuClick, darkMode, onDarkModeToggle, searchQuery = '', onS
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    handleProfileMenuClose();
+    logout();
+    navigate('/login');
+  };
+
+  const displayName = user?.username
+    ? user.username.charAt(0).toUpperCase() + user.username.slice(1)
+    : 'Admin';
+  const initials = displayName.slice(0, 2).toUpperCase();
+
   return (
     <AppBar
       position="sticky"
       elevation={0}
       sx={{
-        backgroundColor: '#FFFFFF',
-        borderBottom: '1px solid #E2E8F0',
+        backgroundColor: 'background.paper',
+        borderBottom: '1px solid',
+        borderColor: 'divider',
         height: 80,
       }}
     >
@@ -164,7 +180,7 @@ const Navbar = ({ onMenuClick, darkMode, onDarkModeToggle, searchQuery = '', onS
                 backgroundColor: 'secondary.main',
               }}
             >
-              AD
+              {initials}
             </Avatar>
             {!isMobile && (
               <Box
@@ -181,7 +197,7 @@ const Navbar = ({ onMenuClick, darkMode, onDarkModeToggle, searchQuery = '', onS
                     color: 'text.primary',
                   }}
                 >
-                  Admin
+                  {displayName}
                 </Box>
                 <FiChevronDown size={16} />
               </Box>
@@ -209,7 +225,7 @@ const Navbar = ({ onMenuClick, darkMode, onDarkModeToggle, searchQuery = '', onS
           >
             <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
             <MenuItem onClick={handleProfileMenuClose}>Account Settings</MenuItem>
-            <MenuItem onClick={handleProfileMenuClose}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </Box>
       </Toolbar>

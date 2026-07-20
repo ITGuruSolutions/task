@@ -31,13 +31,15 @@ const ActionBar = ({
         flexWrap: 'wrap',
         mb: 3,
         p: 2,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'background.paper',
         borderRadius: 3,
-        border: '1px solid #E2E8F0',
+        border: '1px solid',
+        borderColor: 'divider',
       }}
     >
       {/* Search */}
       <TextField
+        label="Search users"
         placeholder="Search users..."
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
@@ -76,11 +78,13 @@ const ActionBar = ({
           onChange={(e) => onSortChange(e.target.value)}
           label="Sort By"
         >
+          <MenuItem value="id">ID</MenuItem>
           <MenuItem value="firstName">First Name</MenuItem>
           <MenuItem value="lastName">Last Name</MenuItem>
           <MenuItem value="name">Full Name</MenuItem>
           <MenuItem value="email">Email</MenuItem>
           <MenuItem value="department">Department</MenuItem>
+          <MenuItem value="role">Role</MenuItem>
           <MenuItem value="status">Status</MenuItem>
         </Select>
       </FormControl>
@@ -89,6 +93,7 @@ const ActionBar = ({
       <Button
         variant="outlined"
         onClick={onSortOrderChange}
+        aria-label={sortOrder === 'asc' ? 'Sort ascending' : 'Sort descending'}
         sx={{
           borderRadius: 2,
           minWidth: 50,
@@ -103,7 +108,7 @@ const ActionBar = ({
         <InputLabel>Rows</InputLabel>
         <Select
           value={recordsPerPage}
-          onChange={(e) => onRecordsPerPageChange(e.target.value)}
+          onChange={(e) => onRecordsPerPageChange(Number(e.target.value))}
           label="Rows"
         >
           <MenuItem value={10}>10</MenuItem>
