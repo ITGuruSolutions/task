@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import { FiSliders, FiDatabase, FiActivity } from 'react-icons/fi';
-import axios from 'axios';
+import { userApi } from '../../services/api';
 
 import Sidebar from '../layout/Sidebar';
 import Navbar from '../layout/Navbar';
@@ -27,15 +27,11 @@ function Settings({ darkMode, onDarkModeToggle }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const apiBaseUrl = import.meta.env.VITE_API_URL
-    ? (import.meta.env.VITE_API_URL.startsWith('http')
-        ? import.meta.env.VITE_API_URL
-        : `${window.location.origin}${import.meta.env.VITE_API_URL}`)
-    : `${window.location.origin}/api`;
+  const apiBaseUrl = 'localStorage (HTML5 Client Database)';
 
   const appEnv = window.location.hostname.includes('vercel.app')
-    ? 'production-cloud (Vercel)'
-    : 'local-development';
+    ? 'production-cloud (Vercel Static)'
+    : 'local-development (Static)';
 
   // Settings state (saved in local storage)
   const [defaultLimit, setDefaultLimit] = useState(() => {
@@ -65,8 +61,8 @@ function Settings({ darkMode, onDarkModeToggle }) {
   const handleResetDatabase = async () => {
     setResetting(true);
     try {
-      const response = await axios.post('/api/users/reset');
-      toast.success(response.data?.message || 'Database reset successfully');
+      const response = await userApi.resetDatabase();
+      toast.success(response.message || 'Database reset successfully');
     } catch (err) {
       toast.error('Failed to reset database');
       console.error(err);
@@ -192,7 +188,7 @@ function Settings({ darkMode, onDarkModeToggle }) {
                             Database Connection Status
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            Running on in-memory mock schema layer.
+                            Running on HTML5 LocalStorage schema.
                           </Typography>
                         </Box>
                         <Typography variant="body2" color="success.main" fontWeight={600}>
