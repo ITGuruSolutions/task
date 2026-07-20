@@ -11,7 +11,7 @@ async function start() {
     console.log('Connected to MongoDB');
 
     const server = express();
-    server.use('/api', app);
+    server.use(app);
 
     server.listen(PORT, () => {
       console.log(`API server running at http://localhost:${PORT}`);

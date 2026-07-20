@@ -23,14 +23,14 @@ app.use(async (_req, _res, next) => {
   }
 });
 
-app.get('/health', (_req, res) => {
+app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
     database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
   });
 });
 
-app.use('/users', usersRouter);
+app.use('/api/users', usersRouter);
 
 app.use((error, _req, res, _next) => {
   console.error('API error:', error);
