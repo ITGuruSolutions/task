@@ -27,11 +27,15 @@ function Settings({ darkMode, onDarkModeToggle }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const apiBaseUrl = 'localStorage (HTML5 Client Database)';
+  const apiBaseUrl = import.meta.env.VITE_API_URL
+    ? (import.meta.env.VITE_API_URL.startsWith('http')
+        ? import.meta.env.VITE_API_URL
+        : `${window.location.origin}${import.meta.env.VITE_API_URL}`)
+    : `${window.location.origin}/api`;
 
   const appEnv = window.location.hostname.includes('vercel.app')
-    ? 'production-cloud (Vercel Static)'
-    : 'local-development (Static)';
+    ? 'production-cloud (Vercel)'
+    : 'local-development';
 
   // Settings state (saved in local storage)
   const [defaultLimit, setDefaultLimit] = useState(() => {
@@ -187,8 +191,8 @@ function Settings({ darkMode, onDarkModeToggle }) {
                           <Typography variant="body2" fontWeight={600}>
                             Database Connection Status
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            Running on HTML5 LocalStorage schema.
+                           <Typography variant="caption" color="text.secondary">
+                            Running on in-memory mock schema layer.
                           </Typography>
                         </Box>
                         <Typography variant="body2" color="success.main" fontWeight={600}>
