@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { User } from '../models/User.js';
+import { seedUsersIfEmpty } from '../db.js';
 
 const router = Router();
 
@@ -62,6 +63,17 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
     console.error('DELETE /users/:id error:', error);
     res.status(500).json({ message: 'Failed to delete user' });
+  }
+});
+
+router.post('/reset', async (req, res) => {
+  try {
+    await User.deleteMany({});
+    await seedUsersIfEmpty();
+    res.json({ message: 'Database reset successfully' });
+  } catch (error) {
+    console.error('POST /users/reset error:', error);
+    res.status(500).json({ message: 'Failed to reset database' });
   }
 });
 

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { User } from './models/User.js';
+import { User, setUseInMemory } from './models/User.js';
 import { departments, roles } from '../src/data/dummyData.js';
 
 const MONGO_URI = process.env.MONGO_URI;
@@ -22,6 +22,7 @@ export async function connectDB() {
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGO_URI, {
       bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
     });
   }
 
@@ -58,6 +59,13 @@ export async function seedUsersIfEmpty() {
 }
 
 export async function initDB() {
-  await connectDB();
-  await seedUsersIfEmpty();
+  try {
+    await connectDB();
+    await seedUsersIfEmpty();
+  } catch (error) {
+    console.error('Failed to connect to MongoDB:', error.message);
+    console.warn('Falling back to in-memory mock database.');
+    setUseInMemory(true);
+    await seedUsersIfEmpty();
+  }
 }

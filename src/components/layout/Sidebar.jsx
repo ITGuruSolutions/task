@@ -35,9 +35,9 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
   const initials = displayName.slice(0, 2).toUpperCase();
 
   const menuItems = [
-    { icon: FiLayout, label: 'Dashboard', path: '/' },
-    { icon: FiUsers, label: 'Users', path: '/' },
-    { icon: FiSettings, label: 'Settings', path: '/settings', disabled: true },
+    { icon: FiLayout, label: 'Dashboard', path: '/dashboard' },
+    { icon: FiUsers, label: 'Users', path: '/users' },
+    { icon: FiSettings, label: 'Settings', path: '/settings', disabled: false },
   ];
 
   const sidebarContent = (

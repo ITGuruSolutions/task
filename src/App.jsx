@@ -9,6 +9,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import Dashboard from './components/pages/Dashboard';
 import Login from './components/pages/Login';
 import NotFound from './components/pages/NotFound';
+import Settings from './components/pages/Settings';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -21,8 +22,9 @@ function App() {
 
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard
@@ -32,8 +34,28 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/dashboard" element={<Navigate to="/" replace />} />
-        <Route path="/users" element={<Navigate to="/" replace />} />
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <Dashboard
+                darkMode={darkMode}
+                onDarkModeToggle={() => setDarkMode((prev) => !prev)}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings
+                darkMode={darkMode}
+                onDarkModeToggle={() => setDarkMode((prev) => !prev)}
+              />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </ThemeProvider>

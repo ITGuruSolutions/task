@@ -43,8 +43,10 @@ const ActionBar = ({
         placeholder="Search users..."
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
-        InputProps={{
-          startAdornment: <FiSearch style={{ marginRight: 8, color: '#64748B' }} />,
+        slotProps={{
+          input: {
+            startAdornment: <FiSearch style={{ marginRight: 8, color: '#64748B' }} />,
+          },
         }}
         sx={{
           flex: isMobile ? 1 : 'auto',

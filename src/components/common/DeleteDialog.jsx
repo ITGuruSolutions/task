@@ -9,13 +9,15 @@ const DeleteDialog = ({ open, onClose, onConfirm, userName, loading }) => {
       onClose={onClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        component: motion.div,
-        initial: { opacity: 0, scale: 0.95 },
-        animate: { opacity: 1, scale: 1 },
-        exit: { opacity: 0, scale: 0.95 },
-        transition: { duration: 0.2 },
-        sx: { borderRadius: 3 },
+      slotProps={{
+        paper: {
+          component: motion.div,
+          initial: { opacity: 0, scale: 0.95 },
+          animate: { opacity: 1, scale: 1 },
+          exit: { opacity: 0, scale: 0.95 },
+          transition: { duration: 0.2 },
+          sx: { borderRadius: 3 },
+        },
       }}
     >
       <DialogTitle>

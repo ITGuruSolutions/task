@@ -104,7 +104,16 @@ function Dashboard({ darkMode, onDarkModeToggle }) {
 
     result.sort((a, b) => {
       if (sortBy === 'id') {
-        return sortOrder === 'asc' ? a.id - b.id : b.id - a.id;
+        const idA = String(a.id || '');
+        const idB = String(b.id || '');
+        const numA = Number(idA);
+        const numB = Number(idB);
+        if (!isNaN(numA) && !isNaN(numB)) {
+          return sortOrder === 'asc' ? numA - numB : numB - numA;
+        }
+        return sortOrder === 'asc'
+          ? idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' })
+          : idB.localeCompare(idA, undefined, { numeric: true, sensitivity: 'base' });
       }
 
       let compareA;
@@ -112,32 +121,32 @@ function Dashboard({ darkMode, onDarkModeToggle }) {
 
       switch (sortBy) {
         case 'firstName':
-          compareA = a.firstName.toLowerCase();
-          compareB = b.firstName.toLowerCase();
+          compareA = (a.firstName || '').toLowerCase();
+          compareB = (b.firstName || '').toLowerCase();
           break;
         case 'lastName':
-          compareA = a.lastName.toLowerCase();
-          compareB = b.lastName.toLowerCase();
+          compareA = (a.lastName || '').toLowerCase();
+          compareB = (b.lastName || '').toLowerCase();
           break;
         case 'name':
-          compareA = `${a.firstName} ${a.lastName}`.toLowerCase();
-          compareB = `${b.firstName} ${b.lastName}`.toLowerCase();
+          compareA = `${a.firstName || ''} ${a.lastName || ''}`.toLowerCase().trim();
+          compareB = `${b.firstName || ''} ${b.lastName || ''}`.toLowerCase().trim();
           break;
         case 'email':
-          compareA = a.email.toLowerCase();
-          compareB = b.email.toLowerCase();
+          compareA = (a.email || '').toLowerCase();
+          compareB = (b.email || '').toLowerCase();
           break;
         case 'department':
-          compareA = a.department.toLowerCase();
-          compareB = b.department.toLowerCase();
+          compareA = (a.department || '').toLowerCase();
+          compareB = (b.department || '').toLowerCase();
           break;
         case 'role':
-          compareA = a.role.toLowerCase();
-          compareB = b.role.toLowerCase();
+          compareA = (a.role || '').toLowerCase();
+          compareB = (b.role || '').toLowerCase();
           break;
         case 'status':
-          compareA = a.status.toLowerCase();
-          compareB = b.status.toLowerCase();
+          compareA = (a.status || '').toLowerCase();
+          compareB = (b.status || '').toLowerCase();
           break;
         default:
           return 0;
