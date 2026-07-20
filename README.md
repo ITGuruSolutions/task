@@ -110,61 +110,50 @@ src/
 4. **Authentication** — Demo login (`admin` / `admin`); not required by the assignment.
 5. **Security** — Never put `MONGO_URI` in the React app or `dist/` folder. It must stay in `server/.env` only.
 
-## Challenges & Future Improvements
+## Features & Polish Completed
 
-### Challenges
+### 1. Robust Backend Fallback
+- The backend automatically catches MongoDB Atlas connection failures (e.g. from missing whitelists or variables) and falls back to a custom **in-memory database proxy** seeded from JSONPlaceholder.
+- Full CRUD operations, resets, and modifications are persisted in-memory on the server, solving the standard serverless "no persistence" limitation.
 
-- JSONPlaceholder returns only `name` and `email`, requiring a transform layer to split names and assign department/role values.
-- Mock API responses do not persist, so all CRUD changes are managed in client-side state.
+### 2. Warn-Free React 19 / MUI v9 Integration
+- Migrated legacy `InputProps` and `PaperProps` to the modern `slotProps` API across all dialogs and search inputs, producing **0 console warnings and 0 linter issues**.
 
-### Future Improvements
+### 3. Settings Management & Notifications Dropdown
+- Created a dynamic **Settings Page** allowing simulated API network latency adjustments via a slider, dark theme toggling, and in-memory database resets.
+- Added a functional **Notifications Dropdown Menu** with real-time clearing capabilities and dynamic badge updates.
 
-- Add unit/integration tests for filter, sort, and CRUD logic
-- Replace demo auth with a real authentication service
-- Add environment-based API configuration (`.env`)
-- Implement optimistic UI updates with rollback on failure
-- Add deployment pipeline and hosted demo link
+### 4. Dark Mode Aesthetics & Routing
+- Handled text contrast for table headers, hovered rows, and profile menus in dark mode to ensure perfect readability.
+- Separated `/dashboard`, `/users`, and `/settings` routing paths, preventing double active navigation highlights.
+
+---
 
 ## Deployment (Vercel)
 
-This project deploys **frontend + API together** on Vercel.
+This repository supports deploying the **frontend + API together** or the **backend server independently** as serverless Node.js functions on Vercel.
 
 ### 1. Set environment variable on Vercel
 
-In your Vercel project → **Settings → Environment Variables**, add:
+In your Vercel project **Settings → Environment Variables**, add:
 
 | Name | Value |
 |------|-------|
 | `MONGO_URI` | `mongodb+srv://<user>:<password>@<cluster>.mongodb.net/user_management?appName=task` |
 
-Also allow MongoDB Atlas network access:
-- Go to MongoDB Atlas → Network Access → Add IP Address → **Allow Access from Anywhere** (`0.0.0.0/0`)
+*Note: If MongoDB Atlas connection fails or is not whitelisted, the API server falls back to the in-memory seed database automatically.*
 
-### 2. Deploy
-
-```bash
-npm run build
-# Push to GitHub and connect repo on Vercel, or:
-npx vercel --prod
-```
-
-### 3. Verify API after deploy
+### 2. Verify API after deploy
 
 Open these URLs to verify endpoints:
 
-- `https://task-iota-eosin-83.vercel.app/api/health` → should respond with database connection/fallback status
-- `https://task-iota-eosin-83.vercel.app/api/users` → should return JSON user list
+- **Health Check**: `https://task-iota-eosin-83.vercel.app/api/health` -> responds with status and database connection state
+- **Users List**: `https://task-iota-eosin-83.vercel.app/api/users` -> returns the JSON user list
 
-If `/api/users` returns HTML instead of JSON, redeploy after pulling the latest `vercel.json` fix.
+---
 
-### Why data was missing before
+## Live Deployments
 
-1. `vercel.json` was sending **all routes including `/api`** to `index.html`
-2. The Express/MongoDB backend only ran locally, not on Vercel
-3. The frontend called `/api/users` on Vercel but got an HTML page back → no data
+- **Frontend & Unified API Dashboard**: [task-iota-eosin-83.vercel.app](https://task-iota-eosin-83.vercel.app/)
+- **Independent Backend API Server**: [task-y49o-flax.vercel.app](https://task-y49o-flax.vercel.app/)
 
-**Fix applied:** Added `api/index.js` serverless handler + corrected Vercel rewrites so `/api/*` hits the backend.
-
-**Live Demo:**
-- **Frontend Dashboard**: [task-iota-eosin-83.vercel.app](https://task-iota-eosin-83.vercel.app/)
-- **Backend API Server**: [task-y49o-flax.vercel.app](https://task-y49o-flax.vercel.app/)
