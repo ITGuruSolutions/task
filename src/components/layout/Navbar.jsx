@@ -27,6 +27,7 @@ import {
   FiChevronDown,
 } from 'react-icons/fi';
 import { useAuth } from '../../hooks/useAuth';
+import { toast } from 'react-toastify';
 
 const Navbar = ({ onMenuClick, darkMode, onDarkModeToggle, searchQuery = '', onSearchChange }) => {
   const theme = useTheme();
