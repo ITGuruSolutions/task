@@ -61,26 +61,40 @@ export const seedUsersIfEmpty = async () => {
   }
 };
 
-export const initDB = async () => {
-  if (!MONGO_URI) {
-    console.error('Error: MONGO_URI env variable is missing.');
-    console.log('Falling back to in-memory mock database.');
-    setUseInMemory(true);
-    await seedUsersIfEmpty();
-    return;
-  }
+let dbConnectPromise = null;
 
-  try {
-    // Attempt Mongoose connection with a fast 5-second timeout
-    await mongoose.connect(MONGO_URI, {
-      serverSelectionTimeoutMS: 5000,
-    });
-    setUseInMemory(false);
-    await seedUsersIfEmpty();
-  } catch (error) {
-    console.error('Failed to connect to MongoDB:', error.message);
-    console.log('Falling back to in-memory mock database.');
-    setUseInMemory(true);
-    await seedUsersIfEmpty();
+export const initDB = async () => {
+  if (!dbConnectPromise) {
+    dbConnectPromise = (async () => {
+      if (!MONGO_URI) {
+        console.error('Error: MONGO_URI env variable is missing.');
+        console.log('Falling back to in-memory mock database.');
+        setUseInMemory(true);
+        await seedUsersIfEmpty();
+        return;
+      }
+
+      try {
+        await mongoose.connect(MONGO_URI, {
+          serverSelectionTimeoutMS: 5000,
+        });
+        // Force server selection check by pinging the admin database
+        await mongoose.connection.db.admin().ping();
+        setUseInMemory(false);
+        await seedUsersIfEmpty();
+      } catch (error) {
+        console.error('Failed to connect to MongoDB:', error.message);
+        console.log('Falling back to in-memory mock database.');
+        setUseInMemory(true);
+        // Clean up connections if they were initiated but failed
+        try {
+          await mongoose.disconnect();
+        } catch {
+          // ignore disconnect errors
+        }
+        await seedUsersIfEmpty();
+      }
+    })();
   }
+  return dbConnectPromise;
 };
