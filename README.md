@@ -150,10 +150,10 @@ npx vercel --prod
 
 ### 3. Verify API after deploy
 
-Open these URLs (replace with your domain):
+Open these URLs to verify endpoints:
 
-- `https://your-app.vercel.app/api/health` → should show `"database": "connected"`
-- `https://your-app.vercel.app/api/users` → should return JSON user list
+- `https://task-iota-eosin-83.vercel.app/api/health` → should respond with database connection/fallback status
+- `https://task-iota-eosin-83.vercel.app/api/users` → should return JSON user list
 
 If `/api/users` returns HTML instead of JSON, redeploy after pulling the latest `vercel.json` fix.
 
@@ -165,4 +165,6 @@ If `/api/users` returns HTML instead of JSON, redeploy after pulling the latest 
 
 **Fix applied:** Added `api/index.js` serverless handler + corrected Vercel rewrites so `/api/*` hits the backend.
 
-**Live Demo:** _Add your deployment URL here_
+**Live Demo:**
+- **Frontend Dashboard**: [task-iota-eosin-83.vercel.app](https://task-iota-eosin-83.vercel.app/)
+- **Backend API Server**: [task-y49o-flax.vercel.app](https://task-y49o-flax.vercel.app/)

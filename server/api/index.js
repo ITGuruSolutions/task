@@ -1,5 +1,5 @@
-import app from './app.js';
-import { initDB } from './db.js';
+import app from '../app.js';
+import { initDB } from '../db.js';
 
 // Pre-initialize DB connection for serverless function environment
 initDB().catch((err) => {
